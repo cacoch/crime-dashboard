@@ -125,7 +125,7 @@ def filtro(ds, bien=None, tipo=None, subtipo=None, modalidad=None, return_cols=[
 def load_data():
  #http://www.diputados.gob.mx/sedia/biblio/usieg/usieg_anu_est16/Colima/Poblaci%C3%B3n.xls
  # http://cuentame.inegi.org.mx/monografias/informacion/col/territorio/div_municipal.aspx?tema=me&e=06
-    df1 = pd_read_csv("pob_colima.csv")
+    df1 = pd.read_csv("pob_colima.csv")
     df = pd.read_pickle("colima.pkl")
     return df
 
