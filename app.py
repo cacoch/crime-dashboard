@@ -4,7 +4,7 @@ import pandas as pd
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode, JsCode
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+from graficas import simple
 
 
 def main():
@@ -41,6 +41,9 @@ def main():
         st.write(pivot.to_html() ,unsafe_allow_html=True)
 
 
+    elif page == 'Graficas':
+        fig = simple(df)
+        st.pyplot(fig)
 
 
     st.stop()
