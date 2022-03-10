@@ -1,23 +1,54 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-
+from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode, JsCode
 import matplotlib.pyplot as plt
 import seaborn as sns
 
 
 
 def main():
-    st.title("La estadistica")
+    #st.title("La estadistica")
     data_load_state = st.text('Loading data...')
-
     df = load_data()
     data_load_state.text("Done! (using st.cache)")
+
+    page = st.sidebar.selectbox("Selecciona página", ['Homepage', 'Muestra datos', 'Pivot table', 'Graficas', 'Mapas'])
+
+    if page == 'Homepage':
+        st.title('XXX')
+
+    elif page == 'Muestra datos':
+        st.title("Muestra de datos")
+
+        #st.dataframe( df.style.format({"DATE": 
+        #    lambda t: t.strftime("%b %Y")}))
+        AgGrid(df)
+        st.markdown("""Se pueden filtrar los datos pinchando en el 
+        titulo de la tabla""")
+
+        
+    elif page == 'Pivot table':
+
+        pivot = pd.pivot_table(
+            df,
+            values=['VALUE'],
+            #index=['MODALIDAD', 'TIPO', 'SUBTIPO'],
+            index=['TIPO DE DELITO', 'MUNICIPIO'],
+            aggfunc="sum",
+            margins=True
+        )
+        st.write(pivot.to_html() ,unsafe_allow_html=True)
+
+
+
+
+    st.stop()
+
+
     
     df = filtro(df, tipo='Homicidio', return_cols=['TIPO DE DELITO', 'SUBTIPO DE DELITO'])
     
-    st.write("Data sample")
-    st.write(df.sample(n=10))
     st.write(df.MUNICIPIO.unique().tolist())
 
 
