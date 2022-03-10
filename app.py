@@ -5,6 +5,7 @@ from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 import matplotlib.pyplot as plt
 import seaborn as sns
 from graficas import simple
+from geo_graficas import g_simple
 
 
 def main():
@@ -45,6 +46,8 @@ def main():
         fig = simple(df)
         st.pyplot(fig)
 
+    elif page == 'Mapas':
+        g_simple()
 
     st.stop()
 
