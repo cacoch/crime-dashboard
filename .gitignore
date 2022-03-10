@@ -4,7 +4,6 @@ include/
 lib/
 lib64
 share/
-input/
 *.swp
 __pycache__/
 pyvenv.cfg

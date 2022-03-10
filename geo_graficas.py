@@ -27,38 +27,38 @@ def g_simple():
         color='white', edgecolor='black')
     st.pyplot(gdf.plot(ax=ax, color='red').figure)
 
-file_path = 'input/mex_admbnda_adm2_govmex_20210618.shp'
-mapa_mex = gpd.read_file(file_path)
-
-mapa_mex.drop([ 'ADM2_PCODE', 'ADM2_REF', 'ADM2ALT1ES','ADM2ALT2ES','ADM1_PCODE','ADM0_ES', 'ADM0_PCODE', 'date', 'validOn', 'validTo'], axis=1, inplace=True)
-
-
-
-
-mapa_mex.rename(columns={'ADM1_ES': 'ENTIDAD', 'ADM2_ES' : 'MUNICIPIO'}, inplace=True)
-mapa_mex['ENTIDAD'] = mapa_mex['ENTIDAD'].str.upper()
-mapa_mex['ENTIDAD'] = mapa_mex['ENTIDAD'].str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
-
-mapa_mex['MUNICIPIO'] = mapa_mex['MUNICIPIO'].str.upper()
-mapa_mex['MUNICIPIO'] = mapa_mex['MUNICIPIO'].str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
-
-
-
-
-df = pd.read_pickle('colima.pkl')
-df.drop('ENTIDAD', axis=1, inplace=True)
-df.head()
-
-
-
-
-mapa_col = mapa_mex.loc[mapa_mex['ENTIDAD'] == 'COLIMA'].copy()
-mapa_col.drop('ENTIDAD',  axis=1, inplace=True)
-
-
-
-
-mrg = mapa_col.merge(df, on='MUNICIPIO')
+# file_path = 'input/mex_admbnda_adm2_govmex_20210618.shp'
+# mapa_mex = gpd.read_file(file_path)
+# 
+# mapa_mex.drop([ 'ADM2_PCODE', 'ADM2_REF', 'ADM2ALT1ES','ADM2ALT2ES','ADM1_PCODE','ADM0_ES', 'ADM0_PCODE', 'date', 'validOn', 'validTo'], axis=1, inplace=True)
+# 
+# 
+# 
+# 
+# mapa_mex.rename(columns={'ADM1_ES': 'ENTIDAD', 'ADM2_ES' : 'MUNICIPIO'}, inplace=True)
+# mapa_mex['ENTIDAD'] = mapa_mex['ENTIDAD'].str.upper()
+# mapa_mex['ENTIDAD'] = mapa_mex['ENTIDAD'].str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
+# 
+# mapa_mex['MUNICIPIO'] = mapa_mex['MUNICIPIO'].str.upper()
+# mapa_mex['MUNICIPIO'] = mapa_mex['MUNICIPIO'].str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
+# 
+# 
+# 
+# 
+# df = pd.read_pickle('colima.pkl')
+# df.drop('ENTIDAD', axis=1, inplace=True)
+# df.head()
+# 
+# 
+# 
+# 
+# mapa_col = mapa_mex.loc[mapa_mex['ENTIDAD'] == 'COLIMA'].copy()
+# mapa_col.drop('ENTIDAD',  axis=1, inplace=True)
+# 
+# 
+# 
+# 
+# mrg = mapa_col.merge(df, on='MUNICIPIO')
 #pd.pivot_table(
 #    mrg,
 #    values=['VALUE'],
@@ -70,14 +70,14 @@ mrg = mapa_col.merge(df, on='MUNICIPIO')
 
 
 
-murders =mrg.loc[mrg.MODALIDAD == 'HOMICIDIOS'].copy()
-pd.pivot_table(
-    murders,
-    values=['VALUE'],
-    index=['MUNICIPIO' ],
-    aggfunc="sum",
-    margins=True
-)
+# murders =mrg.loc[mrg.MODALIDAD == 'HOMICIDIOS'].copy()
+# pd.pivot_table(
+#     murders,
+#     values=['VALUE'],
+#     index=['MUNICIPIO' ],
+#     aggfunc="sum",
+#     margins=True
+# )
 
 
 
