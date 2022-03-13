@@ -31,6 +31,26 @@ def main():
         
     elif page == 'Pivot table':
 
+        municipios = df['MUNICIPIO'].unique().tolist()
+        st.multiselect( "Municipio", municipios)
+
+        years = pd.DatetimeIndex(df['DATE']).year.unique().tolist()
+        st.multiselect( "Año", years)
+
+        bienJ = df['BIEN JURÍDICO AFECTADO'].unique().tolist()
+        st.multiselect( 'Bien jurídico afectado', bienJ)
+
+        tipo_del = df['TIPO DE DELITO'].unique().tolist()
+        st.multiselect('Tipo de delito', tipo_del)
+
+        subtipo_del = df['SUBTIPO DE DELITO'].unique().tolist()
+        st.multiselect('Subtipo de delito', subtipo_del)
+
+        modalidad = df['MODALIDAD'].unique().tolist()
+        st.multiselect('Modalidad', modalidad)
+
+        st.button("Filtrar")
+
         pivot = pd.pivot_table(
             df,
             values=['VALUE'],
@@ -53,20 +73,6 @@ def main():
 
 
     
-    df = filtro(df, tipo='Homicidio', return_cols=['TIPO DE DELITO', 'SUBTIPO DE DELITO'])
-    
-    st.write(df.MUNICIPIO.unique().tolist())
-
-
-    grp = df.groupby("MUNICIPIO")
-    
-    fig, ax = plt.subplots()
-    for key, gr in grp:
-        ax.plot(gr.DATE, gr.VALUE, label=key)
-
-    ax.legend()
-
-    st.pyplot(fig)
 
 # given province  name and date, we aproximate poblation size linearly 
 def get_poblacion(poblacion, province, date):
