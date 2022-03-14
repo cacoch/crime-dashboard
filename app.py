@@ -7,10 +7,13 @@ import seaborn as sns
 from graficas import simple
 from geo_graficas import g_simple
 
+global XX
+XX = ['A', 'B']
 
 def main():
     #st.title("La estadistica")
     data_load_state = st.text('Loading data...')
+    global df
     df = load_data()
     data_load_state.text("Done! (using st.cache)")
 
@@ -31,25 +34,31 @@ def main():
         
     elif page == 'Pivot table':
 
-        municipios = df['MUNICIPIO'].unique().tolist()
-        st.multiselect( "Municipio", municipios)
+        municipios = st.multiselect("Municipio", 
+                df['MUNICIPIO'].unique().tolist())
 
-        years = pd.DatetimeIndex(df['DATE']).year.unique().tolist()
-        st.multiselect( "Año", years)
+        years = st.multiselect("Año", 
+                pd.DatetimeIndex(df['DATE']).year.unique().tolist())
 
-        bienJ = df['BIEN JURÍDICO AFECTADO'].unique().tolist()
-        st.multiselect( 'Bien jurídico afectado', bienJ)
+        bienJ = st.multiselect( 'Bien jurídico afectado',
+                df['BIEN JURÍDICO AFECTADO'].unique().tolist(),
+                key="bienJ")
 
-        tipo_del = df['TIPO DE DELITO'].unique().tolist()
-        st.multiselect('Tipo de delito', tipo_del)
+        X= df[df['BIEN JURÍDICO AFECTADO'].isin(bienJ)]
+        tipo2 = st.multiselect('Tipo de delito',
+                 options=X['TIPO DE DELITO'].unique().tolist(),
+                 key="tipo_del")
 
-        subtipo_del = df['SUBTIPO DE DELITO'].unique().tolist()
-        st.multiselect('Subtipo de delito', subtipo_del)
+        XX= df[df['TIPO DE DELITO'].isin(tipo2)]
+        st.multiselect('Subtipo de delito', 
+         XX['SUBTIPO DE DELITO'].unique().tolist())
 
-        modalidad = df['MODALIDAD'].unique().tolist()
-        st.multiselect('Modalidad', modalidad)
+        st.multiselect('Modalidad', 
+         X['MODALIDAD'].unique().tolist())
 
-        st.button("Filtrar")
+        if st.button("Filtrar"):
+            st.write("Sooon ...")
+        
 
         pivot = pd.pivot_table(
             df,
@@ -59,7 +68,7 @@ def main():
             aggfunc="sum",
             margins=True
         )
-        st.write(pivot.to_html() ,unsafe_allow_html=True)
+        #st.write(pivot.to_html() ,unsafe_allow_html=True)
 
 
     elif page == 'Graficas':
@@ -70,6 +79,14 @@ def main():
         g_simple()
 
     st.stop()
+
+def menu_filtro_delito():
+    print(st.session_state.bienJ)
+    print("tipo del")
+    #del st.session_state['tipo_del'] 
+    XX = ["x", "y"]
+
+    
 
 
     
