@@ -56,22 +56,41 @@ def main():
         modalidad = st.multiselect('Modalidad', 
          X['MODALIDAD'].unique().tolist())
 
+        st.write("Nombres de columnas y su orden en la table pivote")
+        pivot_index = st.multiselect('Columnas de pivote', 
+            ['ENTIDAD',
+             'MUNICIPIO',
+             'BIEN JURÍDICO AFECTADO',
+             'TIPO DE DELITO',
+             'SUBTIPO DE DELITO',
+             'MODALIDAD',
+             'DATE'])
+
         if st.button("Filtrar"):
             st.write("Sooon ...")
             st.write(municipios, years, bienJ, tipo2, subtipo, modalidad)
             df1 = filtro(df, years=years, municipios=municipios, bienJ=bienJ, tipo=tipo2, subtipo=subtipo, modalidad=modalidad)
         
 
+            if "DATE" in pivot_index:
+                df1['DATE'] = df1['DATE'].dt.strftime("%Y")
+
             pivot = pd.pivot_table(
-                df,
+                df1,
                 values=['VALUE'],
                 #index=['MODALIDAD', 'TIPO', 'SUBTIPO'],
-                index=['TIPO DE DELITO', 'MUNICIPIO'],
+                index= pivot_index,
                 aggfunc="sum",
                 margins=True
             )
-            #st.write(df1.to_html() ,unsafe_allow_html=True)
+            #pivot = pd.concat([
+            #    d.append(d.sum().rename((k, 'Total')))
+            #    for k, d in pivot.groupby(level=0)
+            #]).append(pivot.sum().rename(('Grand', 'Total')))
+
             st.dataframe(df1)
+            st.write("-------")
+            st.write(pivot.to_html() ,unsafe_allow_html=True)
 
 
     elif page == 'Graficas':
