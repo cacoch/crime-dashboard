@@ -127,27 +127,31 @@ def filtro(ds, years, municipios, bienJ, tipo, subtipo, modalidad):
             c0 = True
 
         if bienJ:
-            c1 = row['BIEN JURÍDICO AFECTADO'] in bien
+            c1 = row['BIEN JURÍDICO AFECTADO'] in bienJ
         else:
             c1 = True
-       #     
-       # if tipo:
-       #     c2 = (row['TIPO DE DELITO'] == tipo)
-       # else:
-       #     c2 = True
-       # 
-       # if subtipo:
-       #     c3 = (row['SUBTIPO DE DELITO'] == subtipo)
-       # else:
-       #     c3 = True
-       # 
-       # if modalidad:
-       #     c4 = (row['MODALIDAD'] == modalidad)
-       # else:
-       #     c4 = True
             
-        #return c0 & c1 & c2 & c3 & c4
-        return c0 & c1
+        if tipo:
+            c2 = row['TIPO DE DELITO'] in tipo
+        else:
+            c2 = True
+        
+        if subtipo:
+            c3 = row['SUBTIPO DE DELITO'] in subtipo
+        else:
+            c3 = True
+        
+        if modalidad:
+            c4 = row['MODALIDAD'] in modalidad
+        else:
+            c4 = True
+            
+        if years:
+            c5 = row['DATE'].year in years 
+        else:
+            c5 = True
+
+        return c0 & c1 & c2 & c3 & c4 & c5
     
     # filter data
     f = ds.apply(filter_fn, axis=1)
