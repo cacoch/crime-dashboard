@@ -50,25 +50,28 @@ def main():
                  key="tipo_del")
 
         XX= df[df['TIPO DE DELITO'].isin(tipo2)]
-        st.multiselect('Subtipo de delito', 
+        subtipo = st.multiselect('Subtipo de delito', 
          XX['SUBTIPO DE DELITO'].unique().tolist())
 
-        st.multiselect('Modalidad', 
+        modalidad = st.multiselect('Modalidad', 
          X['MODALIDAD'].unique().tolist())
 
         if st.button("Filtrar"):
             st.write("Sooon ...")
+            st.write(municipios, years, bienJ, tipo2, subtipo, modalidad)
+            df1 = filtro(df, years=years, municipios=municipios, bienJ=bienJ, tipo=tipo2, subtipo=subtipo, modalidad=modalidad)
         
 
-        pivot = pd.pivot_table(
-            df,
-            values=['VALUE'],
-            #index=['MODALIDAD', 'TIPO', 'SUBTIPO'],
-            index=['TIPO DE DELITO', 'MUNICIPIO'],
-            aggfunc="sum",
-            margins=True
-        )
-        #st.write(pivot.to_html() ,unsafe_allow_html=True)
+            pivot = pd.pivot_table(
+                df,
+                values=['VALUE'],
+                #index=['MODALIDAD', 'TIPO', 'SUBTIPO'],
+                index=['TIPO DE DELITO', 'MUNICIPIO'],
+                aggfunc="sum",
+                margins=True
+            )
+            #st.write(df1.to_html() ,unsafe_allow_html=True)
+            st.dataframe(df1)
 
 
     elif page == 'Graficas':
@@ -114,72 +117,43 @@ def get_poblacion(poblacion, province, date):
     return y
 
 # return rate, values  for colima, Mexico, max state
-def filtro(ds, bien=None, tipo=None, subtipo=None, modalidad=None, return_cols=[]):
+def filtro(ds, years, municipios, bienJ, tipo, subtipo, modalidad):
     
-    fields = ['BIEN JURÍDICO AFECTADO', 'TIPO DE DELITO', 'SUBTIPO DE DELITO', 'MODALIDAD']
-    
-    if set(fields) != set(fields).union(set(return_cols)):
-        raise ValueError("Wrong return columns name")
         
     def filter_fn(row):
-        if bien:
-            c1 = (row['BIEN JURÍDICO AFECTADO'] == bien)
+        if municipios: # check if is empty
+            c0 = row['MUNICIPIO'] in municipios
+        else:  # is empty, so no filter
+            c0 = True
+
+        if bienJ:
+            c1 = row['BIEN JURÍDICO AFECTADO'] in bien
         else:
             c1 = True
+       #     
+       # if tipo:
+       #     c2 = (row['TIPO DE DELITO'] == tipo)
+       # else:
+       #     c2 = True
+       # 
+       # if subtipo:
+       #     c3 = (row['SUBTIPO DE DELITO'] == subtipo)
+       # else:
+       #     c3 = True
+       # 
+       # if modalidad:
+       #     c4 = (row['MODALIDAD'] == modalidad)
+       # else:
+       #     c4 = True
             
-        if tipo:
-            c2 = (row['TIPO DE DELITO'] == tipo)
-        else:
-            c2 = True
-        
-        if subtipo:
-            c3 = (row['SUBTIPO DE DELITO'] == subtipo)
-        else:
-            c3 = True
-        
-        if modalidad:
-            c4 = (row['MODALIDAD'] == modalidad)
-        else:
-            c4 = True
-            
-        return c1 & c2 & c3 & c4
+        #return c0 & c1 & c2 & c3 & c4
+        return c0 & c1
     
     # filter data
     f = ds.apply(filter_fn, axis=1)
     ds = ds[f]
-    ds = ds[['DATE', 'MUNICIPIO', 'VALUE'] + return_cols]
-    
-    # group and sum to remove duplicate rows 
-    ds = ds.groupby(['DATE', 'MUNICIPIO'] + return_cols)['VALUE'].sum().reset_index()
+    print(ds.info())
 
-    # calculate rate per month, state and category
-    if False: """
-    ds['RATE'] = ds.apply(lambda row: row.VALUE / get_poblacion(
-        row.ENTIDAD,row.DATE) * 100000 ,axis=1).round(2)
-    
-    # calculate max state rate per month and category 
-    ds_max =ds.groupby(['DATE'] + return_cols).agg(MAX=('RATE' ,'max')).reset_index() 
-    
-    # calculate national value per category 
-    ds_nac =ds.groupby(['DATE'] + return_cols).agg(VALUE=('VALUE' ,'sum')).reset_index()
-    ds_nac['ENTIDAD'] = 'Nacional'
-    # calculate national rate per category
-    ds_nac['RATE'] = ds_nac.apply(lambda row: row.VALUE / get_poblacion(
-        row.ENTIDAD,row.DATE) * 100000 ,axis=1).round(2)    
-    nacional = ds_nac.copy()                                           
-    #ds_col = ds.loc[ds.ENTIDAD == 'Colima']                                               
-    ds_col = ds.loc[ds.ENTIDAD == 'Michoacán de Ocampo']       
-                                                   
-                                                   
-    result_nac = pd.merge(ds_max, ds_nac, on=['DATE']+ return_cols)
-    result  = result_nac.append( ds_col, sort=True)
-    
-    result.sort_values('DATE', inplace=True)
-    result.reset_index(drop=True, inplace=True)
-
-    
-    return result, nacional
-    """
     return ds
 
 def load_data():
