@@ -94,8 +94,19 @@ def main():
 
 
     elif page == 'Graficas':
-        fig = simple(df)
-        st.pyplot(fig)
+        st.caption("No seleccionar municipio, quiere decir todos")
+        municipios = st.multiselect("Municipio", 
+                df['MUNICIPIO'].unique().tolist())
+
+        st.selectbox("Selecciona indicador", ["dummy1", "dummy2", "dummy"])
+        st.radio("Metrica", ["Valores absolutos", "Por cada 100k habitantes"])
+        if st.button("Grafica"):
+            """The selection doesn't works yet!!
+                    It's fixed to murders """
+            df1 = filtro(df, years=[], municipios=[],
+                    bienJ=[], tipo=['Homicidio'], subtipo=[], modalidad=[])
+            fig = simple(df1)
+            st.pyplot(fig)
 
     elif page == 'Mapas':
         g_simple()
