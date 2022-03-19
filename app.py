@@ -7,8 +7,6 @@ import seaborn as sns
 from graficas import simple
 from geo_graficas import g_simple
 
-global XX
-XX = ['A', 'B']
 
 def main():
     #st.title("La estadistica")
@@ -113,13 +111,6 @@ def main():
 
     st.stop()
 
-def menu_filtro_delito():
-    print(st.session_state.bienJ)
-    print("tipo del")
-    #del st.session_state['tipo_del'] 
-    XX = ["x", "y"]
-
-    
 
 
     
