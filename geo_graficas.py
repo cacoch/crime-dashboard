@@ -34,57 +34,49 @@ def g_simple(df):
     colima = colima.to_crs(epsg=6365)
     shape_clip = colima.clip(grid, keep_geom_type=True)
 
+    df['DATE'] = df['DATE'].dt.year
+
+    murder =df.groupby(['DATE', 'MUNICIPIO'])['VALUE'].sum().reset_index()
+    murder['RATE'] = murder.apply(lambda row: row.VALUE/poblacion[row.MUNICIPIO]* 100000, axis=1).round(2)
+    shape_clip.rename(columns={'NOMGEO': 'MUNICIPIO'}, inplace=True)
+
+    murder_geo = pd.merge(shape_clip, murder, on="MUNICIPIO")
+    print(murder.shape)
+    print(murder_geo.shape)
+    murder_2020 = murder_geo[(murder_geo.DATE == 2020)]
+    print(murder_2020.shape)
+
+    
+    pivot_tbl = pd.pivot_table(
+            df,
+            values=['VALUE'],
+            index=['DATE', 'MUNICIPIO'],
+            aggfunc="sum",
+            margins=True
+            )
+    #st.write(pivot_tbl.to_html(), unsafe_allow_html=True)
+
+    fig, ax = plt.subplots(figsize=(12,14))
+
+    murder_2020.plot(column='RATE', ax=ax, scheme='equal_interval', k=5, cmap='OrRd', edgecolor='k', legend=True)
 
 
-    st.pyplot(shape_clip.plot(column='NOMGEO', cmap='Set3').figure)
+
+    st.write("2020")
+    st.write(murder_2020[['MUNICIPIO','VALUE','RATE']].sort_values(['RATE']))
+    murder_2020.apply(lambda x: ax.annotate(text=x['MUNICIPIO'] 
+        + "\n"+ str(x['RATE']), 
+        xy=x.geometry.centroid.coords[0], ha='center', backgroundcolor="yellow"), axis=1);
+    st.pyplot(fig)
+    
  
-# 
-# 
-# 
-# 
-# mapa_mex.rename(columns={'ADM1_ES': 'ENTIDAD', 'ADM2_ES' : 'MUNICIPIO'}, inplace=True)
 # mapa_mex['ENTIDAD'] = mapa_mex['ENTIDAD'].str.upper()
 # mapa_mex['ENTIDAD'] = mapa_mex['ENTIDAD'].str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
 # 
 # mapa_mex['MUNICIPIO'] = mapa_mex['MUNICIPIO'].str.upper()
 # mapa_mex['MUNICIPIO'] = mapa_mex['MUNICIPIO'].str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
-# 
-# 
-# 
-# 
-# df = pd.read_pickle('colima.pkl')
-# df.drop('ENTIDAD', axis=1, inplace=True)
-# df.head()
-# 
-# 
-# 
-# 
-# mapa_col = mapa_mex.loc[mapa_mex['ENTIDAD'] == 'COLIMA'].copy()
-# mapa_col.drop('ENTIDAD',  axis=1, inplace=True)
-# 
-# 
-# 
-# 
-# mrg = mapa_col.merge(df, on='MUNICIPIO')
-#pd.pivot_table(
-#    mrg,
-#    values=['VALUE'],
-#    index=['MODALIDAD', 'TIPO', ],
-#    aggfunc="sum",
-#   # margins=True
-#)
+ 
 
-
-
-
-# murders =mrg.loc[mrg.MODALIDAD == 'HOMICIDIOS'].copy()
-# pd.pivot_table(
-#     murders,
-#     values=['VALUE'],
-#     index=['MUNICIPIO' ],
-#     aggfunc="sum",
-#     margins=True
-# )
 
 
 
@@ -104,20 +96,9 @@ def g_simple(df):
 # X1['RATE'] = 100000 * X1['VALUE'] /X1['POPULATION']
 #murders.head()
 #https://stackoverflow.com/questions/63974040/line2d-object-has-no-property-column
-# from geopandas import GeoDataFrame
-# X1 = GeoDataFrame(X1)
-# m_2011 = X[X['DATE'].dt.year == 2017]
-# m_2011 = GeoDataFrame(m_2011)
-# 
-# 
-# 
-# 
-# from shapely.geometry import box
+
 # import mapclassify
 # 
-# variable = 'RATE'
-# cmap = 'Oranges'
-# fig, ax = plt.subplots(1, figsize=(20, 12))
 # minx, miny, maxx, maxy = mrg.total_bounds
 # 
 # #print(minx, miny, maxx, maxy)
@@ -160,11 +141,3 @@ def g_simple(df):
 #          xytext=(4,4),
 #           textcoords='offset points',
 #           color='white',backgroundcolor='blue',alpha=0.9), axis=1);
-# 
-# plt.show()
-# 
-# 
-# 
-# 
-# m_2011['centro']
-# 
