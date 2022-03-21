@@ -13,24 +13,12 @@ import streamlit as st
 import geopandas
 
 def g_simple():
-    df = pd.DataFrame(
-        {'City': ['Buenos Aires', 'Brasilia', 'Santiago', 'Bogota', 'Caracas'],
-         'Country': ['Argentina', 'Brazil', 'Chile', 'Colombia', 'Venezuela'],
-         'Latitude': [-34.58, -15.78, -33.45, 4.60, 10.48],
-         'Longitude': [-58.66, -47.91, -70.66, -74.08, -66.86]})
-    gdf = geopandas.GeoDataFrame(
-        df, geometry=geopandas.points_from_xy(df.Longitude, df.Latitude))
-    st.write(gdf.head())
-    world = geopandas.read_file(geopandas.datasets.get_path('naturalearth_lowres'))
-    fig, ax = plt.subplots()
-    ax = world[world.continent == 'South America'].plot(
-        color='white', edgecolor='black')
-    st.pyplot(gdf.plot(ax=ax, color='red').figure)
 
-# file_path = 'input/mex_admbnda_adm2_govmex_20210618.shp'
-# mapa_mex = gpd.read_file(file_path)
-# 
-# mapa_mex.drop([ 'ADM2_PCODE', 'ADM2_REF', 'ADM2ALT1ES','ADM2ALT2ES','ADM1_PCODE','ADM0_ES', 'ADM0_PCODE', 'date', 'validOn', 'validTo'], axis=1, inplace=True)
+    file_path = 'input/06mun.shp'
+    colima = gpd.read_file(file_path)
+    st.pyplot(colima.plot().figure)
+ 
+    #mapa_mex.drop([ 'ADM2_PCODE', 'ADM2_REF', 'ADM2ALT1ES','ADM2ALT2ES','ADM1_PCODE','ADM0_ES', 'ADM0_PCODE', 'date', 'validOn', 'validTo'], axis=1, inplace=True)
 # 
 # 
 # 
