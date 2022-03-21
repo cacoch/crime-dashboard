@@ -1,4 +1,5 @@
 matplotlib==3.5.0
+mapclassify>=2.4.0
 numpy==1.21.4
 pandas==1.3.4
 seaborn==0.11.2
@@ -6,4 +7,3 @@ streamlit==1.2.0
 streamlit-aggrid
 geopandas
 pygeos
-mapclassify=>2.4.0
