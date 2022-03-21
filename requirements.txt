@@ -6,3 +6,4 @@ streamlit==1.2.0
 streamlit-aggrid
 geopandas
 pygeos
+mapclassify=>2.4.0
