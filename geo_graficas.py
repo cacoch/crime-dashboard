@@ -11,14 +11,33 @@ import matplotlib.pyplot as plt
 import geopandas as gpd
 import streamlit as st
 import geopandas
+from shapely.geometry import box
 
-def g_simple():
+poblacion = {"Armería" : 27626,
+"Colima" : 157048,
+"Comala" : 21661,
+"Coquimatlán" : 20837,
+"Cuauhtémoc" : 31267,
+"Ixtlahuacán" : 5623,
+"Manzanillo" : 191031,
+"Minatitlán" : 10231,
+"Tecomán" : 116305,
+"Villa de Álvarez" : 149762}
+
+def g_simple(df):
 
     file_path = 'input/06mun.shp'
+    BOX = [box(-104.75, 18.65, -103.45,19.55)]
+    grid = gpd.GeoDataFrame({'geometry':BOX})
     colima = gpd.read_file(file_path)
-    st.pyplot(colima.plot().figure)
+    grid = grid.set_crs(epsg=6365)
+    colima = colima.to_crs(epsg=6365)
+    shape_clip = colima.clip(grid, keep_geom_type=True)
+
+
+
+    st.pyplot(shape_clip.plot(column='NOMGEO', cmap='Set3').figure)
  
-    #mapa_mex.drop([ 'ADM2_PCODE', 'ADM2_REF', 'ADM2ALT1ES','ADM2ALT2ES','ADM1_PCODE','ADM0_ES', 'ADM0_PCODE', 'date', 'validOn', 'validTo'], axis=1, inplace=True)
 # 
 # 
 # 

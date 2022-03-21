@@ -106,7 +106,9 @@ def main():
             st.pyplot(fig)
 
     elif page == 'Mapas':
-        g_simple()
+        df1 = filtro(df, years=[], municipios=[],
+                bienJ=[], tipo=['Homicidio'], subtipo=[], modalidad=[])
+        g_simple(df1)
 
     st.stop()
 
